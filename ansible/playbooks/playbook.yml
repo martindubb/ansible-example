@@ -1,4 +1,11 @@
 ---
+- name: debug facts
+  hosts: loadbalancer
+  tasks: 
+  - name: Print all gathered facts
+    debug:
+      var: ansible_facts
+
 - name: Konfigurieren des Load Balancers
   hosts: loadbalancer
   become: yes

@@ -5,17 +5,24 @@
     state: present
     update_cache: yes
 
+- name: Erstelle Ordner für die Konfigurationsdatei
+  file:
+    path: "{{ nginx.config_path }}"
+    state: directory
+
 - name: Kopieren der Nginx-Konfigurationsdatei für Load Balancing
   copy:
     src: files/loadbalancer.conf
-    dest: /etc/nginx/conf.d/loadbalancer.conf
+    dest: "{{ nginx.config_path }}/loadbalancer.conf"
+  notify:
+  - Restart Nginx
 
 - name: Entfernen der Standard-Nginx-Konfiguration
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
 
-- name: Restart Nginx
+- name: Stelle sicher, dass Nginx läuft
   service:
     name: nginx
-    state: restarted
+    state: started

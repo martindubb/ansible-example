@@ -10,18 +10,25 @@
     name: npm
     state: present
 
+- name: Retrieve the list of home directories
+  ansible.builtin.command: "ls {{ path_to_app_directory }}"
+  register: app_dir
+  ignore_errors: true
+
 - name: Kopieren der App-Dateien
   copy:
     src: files/app/
-    dest: /home/ubuntu/app
+    dest: "{{ path_to_app_directory }}"
+  when: app_dir.rc != 0
 
 - name: Installieren von App-Abhängigkeiten
   npm:
-    path: /home/ubuntu/app
+    path: "{{ path_to_app_directory }}"
+  when: app_dir.rc != 0
 
 - name: Starten der Node.js-App
   command: 
-    chdir: /home/ubuntu/app
+    chdir: "{{ path_to_app_directory }}"
     cmd: node app.js
   async: 100
   poll: 0
