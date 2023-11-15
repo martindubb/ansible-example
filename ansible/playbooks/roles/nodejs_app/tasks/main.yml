@@ -1,0 +1,27 @@
+---
+- name: Installieren von Node.js
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: Installieren von npm
+  apt:
+    name: npm
+    state: present
+
+- name: Kopieren der App-Dateien
+  copy:
+    src: files/app/
+    dest: /home/ubuntu/app
+
+- name: Installieren von App-Abhängigkeiten
+  npm:
+    path: /home/ubuntu/app
+
+- name: Starten der Node.js-App
+  command: 
+    chdir: /home/ubuntu/app
+    cmd: node app.js
+  async: 100
+  poll: 0

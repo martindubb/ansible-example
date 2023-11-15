@@ -1,0 +1,21 @@
+---
+- name: Installation von Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Kopieren der Nginx-Konfigurationsdatei für Load Balancing
+  copy:
+    src: files/loadbalancer.conf
+    dest: /etc/nginx/conf.d/loadbalancer.conf
+
+- name: Entfernen der Standard-Nginx-Konfiguration
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
